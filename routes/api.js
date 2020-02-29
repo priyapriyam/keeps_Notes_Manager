@@ -3,11 +3,11 @@ module.exports = (note, sleep) =>{
     note.post('/add', (req,res) => {
         let details = {                                                                                  
             title:req.body.title,
-            notes:req.body.notes
+            notes:req.body.notes,
+            timer:req.body.timer
         }
         knex.post_data(details)
         .then((result )=>{
-            console.log(result)
             res.send("data inserted")
         })
         .catch ((err)=>{
@@ -23,7 +23,8 @@ module.exports = (note, sleep) =>{
             var timer=(result[i].timer)
             var title =result[i]['title']
             var id = result[i].notes_id
-                // console.log(id)
+            // console.log(timer);
+            
             if (timer!=null){
                 sleep(timer*60000) // 1 second = 1000,1 minute = 60000 
                     console.log("priya see ,what you have to do in this time",title)
@@ -51,7 +52,6 @@ module.exports = (note, sleep) =>{
                 timer:req.body.timer
             }
         knex.update_data(notes_details,notes_id)
-
         .then((result) => {
             res.send("data updated")
             console.log("data updated")  
@@ -60,7 +60,6 @@ module.exports = (note, sleep) =>{
             res.send ("err")
             console.log("there is error")
         })
-        
     })
 
 
@@ -72,7 +71,7 @@ module.exports = (note, sleep) =>{
             notes:req.body.notes
         }
         // console.log(notes_details)
-    knex.delete_data(notes_details,notes_id)
+        knex.delete_data(notes_details,notes_id)
         .then(() => {
             res.send("data deleted")
         })
@@ -81,4 +80,16 @@ module.exports = (note, sleep) =>{
             console.log("there is error")
         })
     })
+
+    note.get('/search_data/:search',(req,res) => {
+        let search = req.params.search
+        knex.search_data(search)
+        .then((result) => {
+            res.send(result)  
+        })
+        .catch((err) => {
+            res.send ("err")
+        })
+    })
 }
+
